@@ -21,3 +21,5 @@ The scheduler loaded `peakPrefillThroughput: 400` with the producer names set. A
 | 3030 characters, producer names omitted | 16 | 4 | split 9 and 7 |
 
 The service was put back to queue weight 2 and prefix weight 3 after the check.
+
+The same peak, with the producer name fields omitted, was loaded again with four replicas. The scheduler logged `peakPrefillThroughput: 400`, `blockSizeTokens: 96`, and `autoTune: false`. Those counts, including the 1860-character family this peak left on one pod, are in [results.md](results.md).

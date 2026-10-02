@@ -24,3 +24,5 @@ The first scheduler pod logged `Picker: weighted-random-picker`, `blockSizeToken
 | `aspen`, a second long preamble | 16 | 4 | 1 | producer names set |
 
 The service was put back to queue weight 2 and prefix weight 3 after the check.
+
+The same document, with the producer name fields omitted, was loaded again with four replicas. The scheduler logged `weighted-random-picker`, `blockSizeTokens: 96`, `autoTune: false`, and `peakPrefillThroughput: 15928`. Those counts are in [results.md](results.md).

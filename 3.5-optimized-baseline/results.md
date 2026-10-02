@@ -79,3 +79,47 @@ Queue weight 2, prefix weight 3. The running producer was the 3.5.1 default (blo
 Unique prompts used both pods. Each long prefix family stayed on one pod, and the two families used different pods. Prefixes shorter than one 256-byte block used both pods. The 336-byte prefix used both pods. The long `willow` prefix stayed on one pod, including when a longer unique tail was appended and when the requests were sent one at a time.
 
 Requests finished in about a fifth of a second, so the in-flight token count stayed far under 286,704 and the 18-second load gate did not open.
+
+## Four replicas
+
+Same document, same model, vLLM still at `--block-size=32`. The pool was four L4 replicas. Counts are `POST /v1/completions` in one fixed pod order. Client p50 on these rows was about 0.19 s.
+
+### Before this document
+
+Queue weight 2, prefix weight 3. The running producer still started at block size 16 and was raised to 64 with `autoTune: true`.
+
+| Family | Requests | Pods |
+|---|---|---|
+| Unique prompts | 16 | 4, 6, 3, 3 |
+| 72 bytes | 12 | 4, 2, 3, 3 |
+| 248 bytes | 12 | 0, 12, 0, 0 |
+| 336 bytes | 12 | 0, 0, 12, 0 |
+| 477 bytes | 12 | 8, 0, 4, 0 |
+| `willow`, 1860 characters | 16 | 0, 16, 0, 0 |
+| `peacock`, 1960 characters | 16 | 15, 0, 0, 0 |
+| `birch`, 3680 characters | 16 | 0, 0, 16, 0 |
+| `aspen`, 3200 characters | 16 | 0, 0, 0, 16 |
+| `willow`, one request at a time | 8 | 0, 8, 0, 0, the same pod as `willow` |
+| `willow` plus a 3160-character tail | 16 | 0, 16, 0, 0, the same pod |
+
+One `peacock` request failed in the client before it was sent. The 15 that completed stayed on one pod. Prefixes of 248 and 336 bytes stuck to one pod. On the affinity-filter documents those two lengths used all four pods. Each long preamble used a different pod.
+
+### With optimized baseline
+
+| Family | Requests | Pods |
+|---|---|---|
+| Unique prompts | 16 | 3, 6, 3, 4 |
+| 72 bytes | 12 | 3, 3, 5, 1 |
+| 248 bytes | 12 | 3, 3, 3, 3 |
+| 336 bytes | 12 | 3, 4, 3, 2 |
+| 477 bytes | 12 | 3, 3, 3, 3 |
+| `willow`, 1860 characters | 16 | 0, 0, 0, 16 |
+| `peacock`, 1960 characters | 16 | 9, 0, 0, 7 |
+| `birch`, 3680 characters | 16 | 0, 16, 0, 0 |
+| `aspen`, 3200 characters | 16 | 16, 0, 0, 0 |
+| `willow`, one request at a time | 8 | 0, 0, 0, 8, the same pod as `willow` |
+| `willow` plus a 3160-character tail | 16 | 0, 0, 0, 16 |
+| `birch`, 40 requests, 50 ms apart, `max_tokens` 80 | 40 | 0, 40, 0, 0 |
+| Idle, 3200 characters, 0.8 s apart | 12 | 0, 0, 0, 12 |
+
+Unique prompts and prefixes through 477 bytes used all four pods. `willow`, `birch`, `aspen`, the 40-request `birch` run, and the idle run each stayed on one pod. `peacock` used two pods. A single preamble still leaves the other replicas idle.

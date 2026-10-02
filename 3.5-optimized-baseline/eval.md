@@ -31,3 +31,5 @@ Two ready pods. The scheduler loaded the four plugins, injected `max-score-picke
 | `willow` plus a 3160-character unique tail | 16 | 4 | — |
 
 Nothing waited in vLLM. Requests finished in about 0.2 s. The service was put back to queue weight 2 and prefix weight 3 after the check.
+
+The same document was loaded again the same day with four replicas. The scheduler again injected `max-score-picker` and raised the producer block size from 16 to 64. The four-replica counts are in [results.md](results.md). The service was restored to queue weight 2 and prefix weight 3 afterward. Replicas were left at 4.
