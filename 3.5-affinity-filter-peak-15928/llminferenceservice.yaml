@@ -1,0 +1,64 @@
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: qwen-l4
+  namespace: llm-d
+  annotations:
+    security.opendatahub.io/enable-auth: "false"
+spec:
+  replicas: 2
+  model:
+    uri: hf://Qwen/Qwen3-0.6B
+    name: Qwen/Qwen3-0.6B
+  router:
+    route: {}
+    gateway:
+      refs:
+        - name: openshift-ai-inference
+          namespace: openshift-ingress
+    scheduler:
+      config:
+        inline:
+          apiVersion: llm-d.ai/v1alpha1
+          kind: EndpointPickerConfig
+          plugins:
+            - type: approx-prefix-cache-producer
+              parameters:
+                blockSizeTokens: 96
+                autoTune: false
+            - type: inflight-load-producer
+            - type: prefix-cache-affinity-filter
+              parameters:
+                affinityThreshold: 0.80
+                maxTTFTPenaltyMs: 2000
+                # 2000 ms at 15928 tokens/s opens the pool at 31856 estimated tokens.
+                peakPrefillThroughput: 15928
+                ttftSource: prefillThroughput
+            - type: token-load-scorer
+            - type: weighted-random-picker
+          schedulingProfiles:
+            - name: default
+              plugins:
+                - pluginRef: prefix-cache-affinity-filter
+                - pluginRef: token-load-scorer
+                - pluginRef: weighted-random-picker
+  template:
+    tolerations:
+      - key: nvidia.com/gpu
+        value: present
+        effect: NoSchedule
+    containers:
+      - name: main
+        image: registry.redhat.io/rhaii/vllm-cuda-rhel9@sha256:c056e61672b6aea489ad5dde0bd2f8497230f5333e87f7cf6c494eba3bfdc808
+        env:
+          - name: VLLM_ADDITIONAL_ARGS
+            value: "--max-model-len=4096 --enable-prefix-caching --block-size=32"
+        resources:
+          requests:
+            cpu: "2"
+            memory: 8Gi
+            nvidia.com/gpu: "1"
+          limits:
+            cpu: "4"
+            memory: 16Gi
+            nvidia.com/gpu: "1"
