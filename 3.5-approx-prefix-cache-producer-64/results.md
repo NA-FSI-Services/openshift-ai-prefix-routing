@@ -1,5 +1,7 @@
 # Approximate prefix-cache producer at 64
 
+The completions evaluation is in [eval.md](eval.md).
+
 OpenShift AI **3.5.1**. Two Qwen3-0.6B replicas. Queue weight 2, prefix weight 3, plus `kv-cache-utilization-scorer` and `no-hit-lru-scorer` at weight 2. vLLM `--block-size=32`. The model pods were not restarted.
 
 The controller kept `blockSizeTokens: 64` and `autoTune: false` on `approx-prefix-cache-producer`. The process auto-created `token-producer` with the estimate backend, 4 bytes per pseudo-token. On that backend `blockSizeTokens: 64` is a **256-byte** window. The producer log reporting 64 with `autoTune: false` means that 256-byte window is live. A value below 64 on this binary is raised to 64, so copying 32 onto this field makes the same 256-byte matcher.

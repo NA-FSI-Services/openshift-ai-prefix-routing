@@ -1,0 +1,122 @@
+# Applied 2026-10-01 on OpenShift AI 3.4.4.
+# TrustyAI was Managed on DataScienceCluster default-dsc, with
+# eval.lmeval.permitOnline and permitCodeExecution set to allow.
+# The service was qwen-l4 in llm-d-repro, four replicas, vLLM --block-size=32.
+# Scheduler weights for these jobs were queue 1 and prefix-cache 10.
+# blockSizeTokens on the service was 32 for the block32 jobs and 16 for the block16 jobs.
+# qwen-block32-r2 and qwen-block16-r2 are the same specs with a new metadata.name.
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: qwen-block32
+  namespace: llm-d-repro
+spec:
+  allowOnline: true
+  allowCodeExecution: true
+  model: local-completions
+  modelArgs:
+    - name: model
+      value: Qwen/Qwen3-0.6B
+    - name: base_url
+      value: http://openshift-ai-inference-openshift-default.openshift-ingress.svc.cluster.local/llm-d-repro/qwen-l4/v1/completions
+    - name: tokenizer
+      value: Qwen/Qwen3-0.6B
+    - name: num_concurrent
+      value: "1"
+    - name: max_retries
+      value: "3"
+    - name: tokenized_requests
+      value: "false"
+  taskList:
+    taskNames:
+      - arc_easy
+  limit: "24"
+  batchSize: "1"
+  logSamples: true
+---
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: qwen-block16
+  namespace: llm-d-repro
+spec:
+  allowOnline: true
+  allowCodeExecution: true
+  model: local-completions
+  modelArgs:
+    - name: model
+      value: Qwen/Qwen3-0.6B
+    - name: base_url
+      value: http://openshift-ai-inference-openshift-default.openshift-ingress.svc.cluster.local/llm-d-repro/qwen-l4/v1/completions
+    - name: tokenizer
+      value: Qwen/Qwen3-0.6B
+    - name: num_concurrent
+      value: "1"
+    - name: max_retries
+      value: "3"
+    - name: tokenized_requests
+      value: "false"
+  taskList:
+    taskNames:
+      - arc_easy
+  limit: "24"
+  batchSize: "1"
+  logSamples: true
+---
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: qwen-block32-r2
+  namespace: llm-d-repro
+spec:
+  allowOnline: true
+  allowCodeExecution: true
+  model: local-completions
+  modelArgs:
+    - name: model
+      value: Qwen/Qwen3-0.6B
+    - name: base_url
+      value: http://openshift-ai-inference-openshift-default.openshift-ingress.svc.cluster.local/llm-d-repro/qwen-l4/v1/completions
+    - name: tokenizer
+      value: Qwen/Qwen3-0.6B
+    - name: num_concurrent
+      value: "1"
+    - name: max_retries
+      value: "3"
+    - name: tokenized_requests
+      value: "false"
+  taskList:
+    taskNames:
+      - arc_easy
+  limit: "24"
+  batchSize: "1"
+  logSamples: true
+---
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: LMEvalJob
+metadata:
+  name: qwen-block16-r2
+  namespace: llm-d-repro
+spec:
+  allowOnline: true
+  allowCodeExecution: true
+  model: local-completions
+  modelArgs:
+    - name: model
+      value: Qwen/Qwen3-0.6B
+    - name: base_url
+      value: http://openshift-ai-inference-openshift-default.openshift-ingress.svc.cluster.local/llm-d-repro/qwen-l4/v1/completions
+    - name: tokenizer
+      value: Qwen/Qwen3-0.6B
+    - name: num_concurrent
+      value: "1"
+    - name: max_retries
+      value: "3"
+    - name: tokenized_requests
+      value: "false"
+  taskList:
+    taskNames:
+      - arc_easy
+  limit: "24"
+  batchSize: "1"
+  logSamples: true

@@ -1,6 +1,8 @@
 # OpenShift AI prefix-cache configurations
 
-Lab measurements of `LLMInferenceService` scheduler documents on OpenShift AI **3.4.4** and **3.5.1**. The workload was Qwen3-0.6B on NVIDIA L4. Each directory is one configuration: the service manifest, and the traffic result from the release it was run on.
+Lab measurements of `LLMInferenceService` scheduler documents on OpenShift AI **3.4.4** and **3.5.1**. The workload was Qwen3-0.6B on NVIDIA L4. Each directory is one configuration: the service manifest, the evaluation that produced the numbers, and the traffic result from the release it was run on.
+
+`3.4-prefix-cache-scorer-32` is the configuration that has TrustyAI `LMEvalJob` objects (`arc_easy`, 24 examples, 96 completions). Those jobs ran at queue weight 1 and prefix weight 10. The other directories were checked with a `POST /v1/completions` load. Each directory's `eval.md` records the job parameters, and `results.md` records where the requests landed.
 
 Checked 2026-10-01.
 

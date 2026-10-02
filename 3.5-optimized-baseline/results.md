@@ -1,5 +1,7 @@
 # Optimized baseline
 
+The evaluation, including the 3.4.4 startup failure and the 3.5.1 completions load, is in [eval.md](eval.md).
+
 The inline document is the `EndpointPickerConfig` from the upstream llm-d optimized-baseline router overlay (`guides/optimized-baseline/router/optimized-baseline.values.yaml` on `llm-d/llm-d`). Helm-only fields (`extraServicePorts`, `epp`, `modelServers`) are unknown on `spec.router` for both 3.4.4 and 3.5.1. A server-side dry-run left the object unchanged on both releases.
 
 The filter keeps endpoints whose prefix-cache score is at least 0.80. The load gate reopens the pool when the best sticky endpoint's estimated time to first token exceeds the best other endpoint by more than `maxTTFTPenaltyMs`. Built-in defaults are `maxTTFTPenaltyMs: 18000` and `peakPrefillThroughput: 15928` tokens/s. Estimated TTFT in milliseconds is `inFlightTokens / peakPrefillThroughput × 1000`. The gate opens when the sticky pod is about **286,704** in-flight tokens ahead of an idle pod (`18000 / 1000 × 15928`). Those defaults are the Qwen3-32B, two-H100, TP=2 calibration named in the upstream file.

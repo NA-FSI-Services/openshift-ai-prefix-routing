@@ -1,5 +1,7 @@
 # Prefix-cache scorer at 144, vLLM at 64
 
+The completions evaluation is in [eval.md](eval.md).
+
 OpenShift AI **3.4.4**. Four Qwen3-0.6B replicas. Queue weight 2, prefix weight 3. vLLM `--block-size=64`. The scheduler log showed `blockSizeTokens: 144`.
 
 `144 × 4 = 576` characters. A 64-token prefix of the `cinnamon` family on this tokenizer is 572 characters, so that prefix does not complete a character block. This is the measured pairing when vLLM is already at 64. A longer token reaches 64 tokens in more than 572 characters. The character length of a 64-token prefix on the tokenizer in use is the number to divide by 4, then add one block.

@@ -1,5 +1,7 @@
 # Affinity filter, peak 15,928
 
+The completions evaluation is in [eval.md](eval.md).
+
 OpenShift AI **3.5.1**. Two Qwen3-0.6B replicas. vLLM left at `--block-size=32`. The model pods were not restarted.
 
 `maxTTFTPenaltyMs: 2000` and `peakPrefillThroughput: 15928` open the pool when the sticky pod is **31,856** estimated tokens ahead of an idle pod (`2000 / 1000 × 15928`).

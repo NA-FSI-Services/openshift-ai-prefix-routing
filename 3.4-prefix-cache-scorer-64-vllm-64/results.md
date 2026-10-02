@@ -1,5 +1,7 @@
 # Prefix-cache scorer at 64, vLLM at 64
 
+The completions evaluation is in [eval.md](eval.md).
+
 OpenShift AI **3.4.4**. Four Qwen3-0.6B replicas. Queue weight 2, prefix weight 3. vLLM `--block-size=64`. The new pods logged `block_size: 64`, selected FlashAttention, and `vllm:cache_config_info` reported `block_size="64"` and `enable_prefix_caching="True"`.
 
 This was Qwen3-0.6B on an L4. Routing still follows the 256-character picker window. The hit counter moves only in blocks of 64.

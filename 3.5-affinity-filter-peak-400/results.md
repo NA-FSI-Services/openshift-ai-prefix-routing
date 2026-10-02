@@ -1,5 +1,7 @@
 # Affinity filter, peak 400
 
+The completions evaluation is in [eval.md](eval.md).
+
 OpenShift AI **3.5.1**. Two Qwen3-0.6B replicas. vLLM left at `--block-size=32`. The model pods were not restarted.
 
 `peakPrefillThroughput: 400` keeps the 2000 ms budget and opens the pool at **800** estimated tokens (`2000 / 1000 × 400`). The scheduler loaded that peak. A later pod loaded the same peak with the producer name fields omitted. Both spreads below are from that gate. The producer name is not what changed the result.

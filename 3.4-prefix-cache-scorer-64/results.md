@@ -1,5 +1,7 @@
 # Prefix-cache scorer at 64, vLLM at 32
 
+The completions evaluation is in [eval.md](eval.md).
+
 OpenShift AI **3.4.4**. Four Qwen3-0.6B replicas. Queue weight 2, prefix weight 3. vLLM `--block-size=32`, prefix caching on. `vllm:cache_config_info` reported `block_size="32"` and `enable_prefix_caching="True"`.
 
 `blockSizeTokens: 64` is a 256-character window (`64 × 4`). The scheduler log showed `blockSizeTokens: 64` and `autoTune: false`. The 3.4.4 image has no `approx-prefix-cache-producer` type. The field is set on `prefix-cache-scorer`.

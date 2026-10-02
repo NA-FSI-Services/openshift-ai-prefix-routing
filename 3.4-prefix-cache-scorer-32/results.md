@@ -1,5 +1,7 @@
 # Prefix-cache scorer at 32, vLLM at 32
 
+Evaluation jobs, including the TrustyAI `LMEvalJob` manifests and ARC-Easy scores, are in [eval.md](eval.md).
+
 OpenShift AI **3.4.4**. Four Qwen3-0.6B replicas. Queue weight 2, prefix weight 3. vLLM `--block-size=32`, prefix caching on.
 
 `blockSizeTokens: 32` is a 128-character window (`32 × 4`). The scheduler log for this setting is `PrefixCachePlugin initialized` with `blockSizeTokens: 32` and `autoTune: false`. When the field is omitted, the same binary logs `blockSizeTokens: 16`.

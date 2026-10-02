@@ -1,5 +1,7 @@
 # Prefix-cache scorer at 96, vLLM at 32
 
+The completions evaluation is in [eval.md](eval.md).
+
 OpenShift AI **3.4.4**. Four Qwen3-0.6B replicas. Queue weight 2, prefix weight 3. vLLM left at `--block-size=32`. The model pods were not restarted for this check.
 
 `blockSizeTokens: 96` is a 384-character window (`96 × 4`). The new scheduler logged `blockSizeTokens: 96` and `autoTune: false`. On this Qwen tokenizer, 384 characters was 44 tokens, one vLLM block of 32, and the hit counter moved.
