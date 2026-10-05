@@ -42,3 +42,7 @@ vLLM stores one KV block per `--block-size` tokens. A partial block is not store
 - A repeated prefix shorter than the picker window uses the pool.
 - A repeated prefix longer than the window sticks to one pod, or to two when the first concurrent wave lands on two, and the hit counter rises by one vLLM block for each completed block of the shared prefix.
 - A stick whose hit counter stays at 0 is a picker match vLLM did not store.
+
+## Shared preamble
+
+[large-preamble.md](large-preamble.md) sends one repeated preamble to a four-replica Gemma service with vLLM `--block-size=32`. The `arc_easy` `LMEvalJob` stays unchanged. The load is `POST /v1/completions`: the same leading text on every prompt, then a unique line. Token counts come from that pod's `/tokenize`.
