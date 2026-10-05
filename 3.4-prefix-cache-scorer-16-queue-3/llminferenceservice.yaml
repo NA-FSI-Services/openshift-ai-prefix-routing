@@ -1,0 +1,63 @@
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: qwen-l4
+  namespace: llm-d-repro
+  annotations:
+    security.opendatahub.io/enable-auth: "false"
+spec:
+  replicas: 4
+  model:
+    uri: hf://Qwen/Qwen3-0.6B
+    name: Qwen/Qwen3-0.6B
+  router:
+    route: {}
+    gateway:
+      refs:
+        - name: openshift-ai-inference
+          namespace: openshift-ingress
+    scheduler:
+      config:
+        inline:
+          apiVersion: inference.networking.x-k8s.io/v1alpha1
+          kind: EndpointPickerConfig
+          plugins:
+            - type: prefix-cache-scorer
+              parameters:
+                blockSizeTokens: 16
+                autoTune: false
+            - type: queue-scorer
+          schedulingProfiles:
+            - name: default
+              plugins:
+                - pluginRef: queue-scorer
+                  weight: 3
+                - pluginRef: prefix-cache-scorer
+                  weight: 2
+  template:
+    tolerations:
+      - key: nvidia.com/gpu
+        value: present
+        effect: NoSchedule
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: qwen-l4
+            topologyKey: kubernetes.io/hostname
+    containers:
+      - name: main
+        image: registry.redhat.io/rhaii-early-access/vllm-cuda-rhel9:3.5.0-ea.2
+        args:
+          - --max-model-len=4096
+          - --block-size=32
+        resources:
+          requests:
+            cpu: "2"
+            memory: 8Gi
+            nvidia.com/gpu: "1"
+          limits:
+            cpu: "4"
+            memory: 16Gi
+            nvidia.com/gpu: "1"

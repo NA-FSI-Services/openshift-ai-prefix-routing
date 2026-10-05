@@ -25,6 +25,7 @@ vLLM stores one KV block per `--block-size` tokens. A partial block is not store
 
 | Directory | Release | Scheduler document | Measured result |
 |---|---|---|---|
+| [3.4-prefix-cache-scorer-16-queue-3](3.4-prefix-cache-scorer-16-queue-3/) | 3.4.4 | Scorer `blockSizeTokens: 16`, `autoTune: false`, queue weight 3, prefix weight 2, vLLM 32 | A 95-character, 16-token prefix pins with a hit counter of 0. Concurrency 32 leaves that pin in place. Omitting the block size leaves autotune on, and that pass followed a 128-character window. |
 | [3.4-prefix-cache-scorer-32](3.4-prefix-cache-scorer-32/) | 3.4.4 | Scorer `blockSizeTokens: 32`, vLLM 32 | A 132-character prefix pins with a hit counter of 0. |
 | [3.4-prefix-cache-scorer-64](3.4-prefix-cache-scorer-64/) | 3.4.4 | Scorer `blockSizeTokens: 64`, vLLM 32 | A 258-character, 29-token prefix pins with a hit counter of 0. |
 | [3.4-prefix-cache-scorer-64-vllm-64](3.4-prefix-cache-scorer-64-vllm-64/) | 3.4.4 | Scorer 64, vLLM `--block-size=64` | 33-token and 37-token prefixes pin with a hit counter of 0. |
